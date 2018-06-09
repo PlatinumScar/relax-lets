@@ -369,38 +369,11 @@ class handler(requestsManager.asyncRequestHandler):
 				log.debug(msg)
 				
 				userStats = userUtils.getUserStats(userID, s.gameMode)
-				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 0 and s.gameMode == 0:					
+				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 0:
 					glob.redis.publish("scores:new_score", json.dumps({
-					"user":{"username":username, "userID": userID, "rank":userStats["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":userStats["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
-					"score":{"scoreID": s.scoreID, "mods":s.mods, "accuracy":s.accuracy, "missess":s.cMiss, "combo":s.maxCombo, "pp":s.pp, "rank":newScoreboard.personalBestRank},
-					"beatmap":{"beatmapID": beatmapInfo.beatmapID, "beatmapSetID": beatmapInfo.beatmapSetID, "max_combo":beatmapInfo.maxCombo, "song_name":beatmapInfo.songName}
-					}))
-
-				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.LOVED and s.gameMode == 0:					
-					glob.redis.publish("scores:new_score_loved", json.dumps({
-					"user":{"username":username, "userID": userID, "rank":userStats["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":userStats["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
-					"score":{"scoreID": s.scoreID, "mods":s.mods, "accuracy":s.accuracy, "missess":s.cMiss, "combo":s.maxCombo, "pp":s.pp, "rank":newScoreboard.personalBestRank},
-					"beatmap":{"beatmapID": beatmapInfo.beatmapID, "beatmapSetID": beatmapInfo.beatmapSetID, "max_combo":beatmapInfo.maxCombo, "song_name":beatmapInfo.songName}
-					}))
-
-				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 0 and s.gameMode == 3:					
-					glob.redis.publish("scores:new_score_m", json.dumps({
-					"user":{"username":username, "userID": userID, "rank":userStats["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":userStats["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
-					"score":{"scoreID": s.scoreID, "mods":s.mods, "accuracy":s.accuracy, "missess":s.cMiss, "combo":s.maxCombo, "pp":s.pp, "rank":newScoreboard.personalBestRank},
-					"beatmap":{"beatmapID": beatmapInfo.beatmapID, "beatmapSetID": beatmapInfo.beatmapSetID, "max_combo":beatmapInfo.maxCombo, "song_name":beatmapInfo.songName}
-					}))
-
-				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 0 and s.gameMode == 0:					
-					glob.redis.publish("scores:score_sus", json.dumps({
-					"user":{"username":username, "userID": userID, "rank":userStats["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":userStats["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
-					"score":{"scoreID": s.scoreID, "mods":s.mods, "accuracy":s.accuracy, "missess":s.cMiss, "combo":s.maxCombo, "pp":s.pp, "rank":newScoreboard.personalBestRank},
-					"beatmap":{"beatmapID": beatmapInfo.beatmapID, "beatmapSetID": beatmapInfo.beatmapSetID, "max_combo":beatmapInfo.maxCombo, "song_name":beatmapInfo.songName}
-					}))
-
-				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 0 and s.gameMode == 2:					
-					glob.redis.publish("scores:new_score_ctb", json.dumps({
-					"user":{"username":username, "userID": userID, "rank":userStats["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":userStats["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
-					"score":{"scoreID": s.scoreID, "mods":s.mods, "accuracy":s.accuracy, "missess":s.cMiss, "combo":s.maxCombo, "pp":s.pp, "rank":newScoreboard.personalBestRank},
+					"gm":s.gameMode,
+					"user":{"username":username, "userID": userID, "rank":newUserData["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":newUserData["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
+					"score":{"scoreID": s.scoreID, "mods":s.mods, "accuracy":s.accuracy, "missess":s.cMiss, "combo":s.maxCombo, "pp":s.pp, "rank":newScoreboard.personalBestRank, "ranking":s.rank},
 					"beatmap":{"beatmapID": beatmapInfo.beatmapID, "beatmapSetID": beatmapInfo.beatmapSetID, "max_combo":beatmapInfo.maxCombo, "song_name":beatmapInfo.songName}
 					}))
 

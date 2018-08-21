@@ -67,10 +67,7 @@ class scoreboard:
 				friends = "AND (scores.userid IN (SELECT user2 FROM users_relationships WHERE user1 = %(userid)s) OR scores.userid = %(userid)s)"
 
 			# Sort and limit at the end
-			if (self.mods & 128 > 0):
-				order = "ORDER BY pp DESC"
-			else:
-				order = "ORDER BY score DESC"	
+			order = "ORDER BY score DESC"
 			limit = "LIMIT 1"
 
 			# Build query, get params and run query
@@ -117,10 +114,7 @@ class scoreboard:
 		elif self.mods & modsEnum.AUTOPLAY > 0 or glob.conf.extra["scoreboard"]["ppboard"]:
 			# Otherwise, filter by pp
 			order = "ORDER BY pp DESC"
-		if (self.mods & 128 > 0):
-			limit = "LIMIT 100"
-		else:
-			limit = "LIMIT 50"
+		limit = "LIMIT 100"
 
 		# Build query, get params and run query
 		query = buildQuery(locals())
@@ -238,4 +232,5 @@ class scoreboard:
 		# Output top 50 scores
 		for i in self.scores[1:]:
 			data += i.getData(pp=glob.conf.extra["scoreboard"]["ppboard"] or (self.mods > -1 and self.mods & modsEnum.AUTOPLAY > 0))
+
 		return data

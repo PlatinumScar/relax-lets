@@ -196,6 +196,7 @@ if __name__ == "__main__":
 	__author__ = "Nyo"
 	parser = argparse.ArgumentParser(description="pp recalc tool for ripple")
 	parser.add_argument('-r','--recalc', help="recalculate pp for every score", required=False, action='store_true')
+	parser.add_argument('-c','--cmyui', help="recalculate pp for cmyui flagged scores", required=False, action='store_true')
 	parser.add_argument('-z','--zero', help="calculate pp for 0 pp scores", required=False, action='store_true')
 	parser.add_argument('-i','--id', help="calculate pp for score with this id", required=False)
 	parser.add_argument('-m','--mods', help="calculate pp for scores with this mod (mod id)", required=False)
@@ -248,6 +249,11 @@ if __name__ == "__main__":
 		# 0pp recalc
 		print("> Recalculating pp for zero-pp scores")
 		scores = glob.db.fetchAll("SELECT * FROM scores LEFT JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE scores.completed = 3 AND scores.pp = 0 ORDER BY scores.id DESC;")
+		massRecalc(scores, workers)
+	elif args.cmyui:
+		# cmyui recalc
+		print("> Recalculating pp for scores with the cmyui flag")
+		scores = glob.db.fetchAll("SELECT * FROM scores LEFT JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE scores.completed = 3 AND scores.pp > 0 AND scores.pp < 150 ORDER BY scores.id DESC;")
 		massRecalc(scores, workers)
 	elif args.recalc:
 		# Full recalc

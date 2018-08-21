@@ -142,7 +142,7 @@ class handler(requestsManager.asyncRequestHandler):
 				ppCalcException = e
 
 			# Restrict obvious cheaters
-			if s.pp >= 650 and s.gameMode == gameModes.STD and restricted == False:
+			if (glob.conf.extra["submit-config"]["max-std-pp"] >= 2500 and s.pp >= glob.conf.extra["submit-config"]["max-std-pp"] and s.gameMode == gameModes.STD) and restricted == False:
 				userUtils.restrict(userID)
 				userUtils.appendNotes(userID, "Restricted due to too high pp gain ({}pp)".format(s.pp))
 				log.warning("**{}** ({}) has been restricted due to too high pp gain **({}pp)**".format(username, userID, s.pp), "cm")
@@ -369,7 +369,7 @@ class handler(requestsManager.asyncRequestHandler):
 				log.debug(msg)
 				
 				userStats = userUtils.getUserStats(userID, s.gameMode)
-				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 0:
+				if s.completed == 3 and restricted == False and beatmapInfo.rankedStatus >= rankedStatuses.RANKED and s.pp > 450:
 					glob.redis.publish("scores:new_score", json.dumps({
 					"gm":s.gameMode,
 					"user":{"username":username, "userID": userID, "rank":newUserData["gameRank"],"oldaccuracy":oldStats["accuracy"],"accuracy":newUserData["accuracy"], "oldpp":oldStats["pp"],"pp":newUserData["pp"]},
@@ -377,14 +377,18 @@ class handler(requestsManager.asyncRequestHandler):
 					"beatmap":{"beatmapID": beatmapInfo.beatmapID, "beatmapSetID": beatmapInfo.beatmapSetID, "max_combo":beatmapInfo.maxCombo, "song_name":beatmapInfo.songName}
 					}))
 
+
+
 				# send message to #announce if we're rank #1
 				if newScoreboard.personalBestRank == 1 and s.completed == 3 and restricted == False:
-					annmsg = "[https://osu.akatsuki.pw/?u={} {}] achieved rank #1 on [https://osu.ppy.sh/b/{} {}] ({})".format(
+					annmsg = "[https://relax.akatsuki.pw/?u={} {}] achieved rank #1 on [https://osu.ppy.sh/b/{} {}] ({}) {}pp".format(
 						userID,
 						username.encode().decode("ASCII", "ignore"),
 						beatmapInfo.beatmapID,
 						beatmapInfo.songName.encode().decode("ASCII", "ignore"),
-						gameModes.getGamemodeFull(s.gameMode)
+						gameModes.getGamemodeFull(s.gameMode),
+						round(s.pp, 2)
+
 					)
 					params = urlencode({"k": glob.conf.config["server"]["apikey"], "to": "#announce", "msg": annmsg})
 					requests.get("{}/api/v1/fokabotMessage?{}".format(glob.conf.config["server"]["banchourl"], params))

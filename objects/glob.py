@@ -11,7 +11,7 @@ except:
 	VERSION = "Unknown"
 ACHIEVEMENTS_VERSION = 0
 
-DATADOG_PREFIX = "RegularPho"
+DATADOG_PREFIX = "RelaxPho"
 db = None
 redis = None
 conf = None

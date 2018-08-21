@@ -112,6 +112,7 @@ class config:
 		self.config.set("server", "banchourl", "http://127.0.0.1:5001")
 		self.config.set("server", "threads", "16")
 		self.config.set("server", "apikey", "changeme")
+		self.config.set("server", "relax", "0")
 
 		self.config.add_section("sentry")
 		self.config.set("sentry", "enable", "False")
